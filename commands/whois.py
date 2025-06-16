@@ -8,6 +8,7 @@ class Whois(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="whois", description="Affiche les informations d'un joueur")
+    @app_commands.checks.has_permissions(view_audit_log=True)
     @app_commands.describe(member="Le joueur dont vous voulez voir les informations")
     async def whois(self, interaction: discord.Interaction, member: discord.Member = None):
         if member is None:

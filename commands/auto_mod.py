@@ -28,6 +28,14 @@ class AutoMod(commands.Cog):
 
         # Vérifier si le message est approprié
         try:
+            # Vérifier les permissions du bot
+            if not message.guild.me.guild_permissions.manage_messages:
+                return
+
+            # Vérifier les permissions de l'utilisateur
+            if message.author.guild_permissions.administrator:
+                return
+
             response = client.moderations.create(
                 input=message.content
             )

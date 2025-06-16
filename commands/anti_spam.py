@@ -21,6 +21,7 @@ class AntiSpam(commands.Cog):
         self.warned_users = set()
 
     @app_commands.command(name="antispam", description="Active ou désactive l'anti-spam")
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guilds(discord.Object(id=GUILD_ID))
     @app_commands.describe(state="on ou off")
     async def antispam(self, interaction: discord.Interaction, state: str):
