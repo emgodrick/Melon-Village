@@ -15,7 +15,6 @@ class ModerationControl(commands.Cog):
     def ensure_auto_mod_enabled(self):
         global AUTO_MOD_ENABLED
         AUTO_MOD_ENABLED = True
-        print("Modération automatique activée au démarrage")
 
     @app_commands.command(name="automod", description="Active ou désactive la modération automatique")
     @app_commands.guilds(discord.Object(id=GUILD_ID))
@@ -43,7 +42,6 @@ class ModerationControl(commands.Cog):
     async def on_ready(self):
         self.ensure_auto_mod_enabled()
         print(f"Bot connecté en tant que {self.bot.user.name}")
-        print(f"État de la modération automatique: {'Activée' if AUTO_MOD_ENABLED else 'Désactivée'}")
 
 async def setup(bot):
     await bot.add_cog(ModerationControl(bot))

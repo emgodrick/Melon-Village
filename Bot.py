@@ -2,7 +2,13 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import os
-from config import DISCORD_TOKEN
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis .env
+load_dotenv()
+
+# Récupérer le token depuis les variables d'environnement
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 GUILD_ID = 1293979587264380928
 
@@ -15,12 +21,25 @@ activity = discord.Game(name="MelonVillage SMP")
 
 class MyBot(commands.Bot):
     async def setup_hook(self):
-        for file in os.listdir("./commands"):
-            if file.endswith(".py") and file != "__init__.py":
-                await self.load_extension(f"commands.{file[:-3]}")
+        print("\n" + "="*50)
+        print("🚀 Initialisation du bot...")
+        print("="*50 + "\n")
+        
+        await self.load_extensions()
         # Synchronisation forcée des commandes
         await self.tree.sync()
-        print("Commandes synchronisées avec succès!")
+        print("\n" + "="*50)
+        print("✅ Synchronisation des commandes Discord terminée")
+        print("="*50)
+
+    async def load_extensions(self):
+        print("\n📚 Chargement des extensions :")
+        print("-"*30)
+        for filename in os.listdir('./commands'):
+            if filename.endswith('.py') and filename != '__init__.py':
+                await self.load_extension(f'commands.{filename[:-3]}')
+                print(f"  ✓ {filename[:-3]}")
+        print("-"*30)
 
 bot = MyBot(
     command_prefix="!",
@@ -31,10 +50,14 @@ bot = MyBot(
 
 @bot.event
 async def on_ready():
-    print(f"Connecté en tant que {bot.user}")
-    print("Liste des commandes disponibles:")
-    for command in bot.tree.get_commands():
-        print(f"- /{command.name}")
+    print("\n" + "="*50)
+    print(f"🤖 Bot connecté avec succès")
+    print(f"📝 Nom : {bot.user.name}")
+    print(f"🆔 ID : {bot.user.id}")
+    print("="*50)
+    
+    print("\n✨ Bot prêt à être utilisé !")
+    print("="*50 + "\n")
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):

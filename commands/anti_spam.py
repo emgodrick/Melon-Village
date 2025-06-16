@@ -82,8 +82,9 @@ class AntiSpam(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Système anti-spam initialisé!")
-        print(f"État de l'anti-spam: {'Activé' if self.anti_spam_enabled else 'Désactivé'}")
+        automod_cog = self.bot.get_cog("ModerationControl")
+        auto_mod_state = "Activé" if automod_cog and automod_cog.is_auto_mod_enabled() else "Désactivé"
+        print(f"État de l'anti-spam: {'Activé' if self.anti_spam_enabled else 'Désactivé'} | AutoMod: {auto_mod_state}")
 
 async def setup(bot):
     await bot.add_cog(AntiSpam(bot)) 

@@ -1,15 +1,19 @@
 import discord
 from discord.ext import commands
 from openai import OpenAI
-from config import OPENAI_API_KEY
+import os
+from dotenv import load_dotenv
 from commands.ai import ModerationControl
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Charger les variables d'environnement
+load_dotenv()
+
+# Récupérer la clé API depuis les variables d'environnement
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class AutoMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        print("Système de modération automatique initialisé!")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -22,8 +26,6 @@ class AutoMod(commands.Cog):
         if not automod_cog or not automod_cog.is_auto_mod_enabled():
             return
 
-        print(f"Message reçu de {message.author}: {message.content}")
-
         # Vérifier si le message est approprié
         try:
             response = client.moderations.create(
@@ -32,30 +34,27 @@ class AutoMod(commands.Cog):
             
             # Debug: Afficher les résultats de la modération
             categories = response.results[0].categories
-            print("Résultats de la modération:", categories)
-            
-            # Liste des raisons de modération
-            reasons = []
+            detected_categories = []
             if categories.harassment:
-                reasons.append("harcèlement")
+                detected_categories.append("harcèlement")
             if categories.hate:
-                reasons.append("contenu haineux")
+                detected_categories.append("contenu haineux")
             if categories.self_harm:
-                reasons.append("automutilation")
+                detected_categories.append("automutilation")
             if categories.sexual:
-                reasons.append("contenu sexuel")
+                detected_categories.append("contenu sexuel")
             if categories.violence:
-                reasons.append("violence")
+                detected_categories.append("violence")
             
-            if reasons:
-                print(f"Message inapproprié détecté de {message.author}")
+            result = "✅ OK" if not detected_categories else f"❌ ({', '.join(detected_categories)})"
+            print(f"Message de {message.author}: {message.content} {result}")
+            
+            if detected_categories:
                 await message.delete()
-                reason_text = ", ".join(reasons)
                 await message.channel.send(
-                    f"{message.author.mention}, votre message a été supprimé pour les raisons suivantes : {reason_text}.",
+                    f"{message.author.mention}, votre message a été supprimé pour les raisons suivantes : {', '.join(detected_categories)}.",
                     delete_after=10
                 )
-                
         except Exception as e:
             print(f"Erreur lors de la modération automatique : {e}")
 
