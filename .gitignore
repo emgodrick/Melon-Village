@@ -1,0 +1,17 @@
+# Environnement virtuel
+.venv1/
+venv/
+env/
+
+# Fichiers de configuration sensibles
+.env
+.env.*
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers système
+.DS_Store
+Thumbs.db 
