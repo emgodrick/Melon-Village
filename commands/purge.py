@@ -1,14 +1,18 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+import os
+from dotenv import load_dotenv
 
-GUILD_ID = 1293979587264380928
+load_dotenv()
+
+GUILD_ID = int(os.getenv('GUILD_ID', 0))
 
 class Purge(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="purge", description="Supprime les derniers messages d’un utilisateur.")
+    @app_commands.command(name="purge", description="Supprime les derniers messages d'un utilisateur.")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guilds(discord.Object(id=GUILD_ID))
     @app_commands.describe(

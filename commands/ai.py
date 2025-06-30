@@ -1,9 +1,13 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+import os
+from dotenv import load_dotenv
 
-GUILD_ID = 1293979587264380928
-OWNER_ID = 829064566742057020
+load_dotenv()
+
+GUILD_ID = int(os.getenv('GUILD_ID', 0))
+OWNER_ID = int(os.getenv('OWNER_ID', 0))
 
 AUTO_MOD_ENABLED = True
 

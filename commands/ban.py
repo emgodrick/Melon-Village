@@ -1,8 +1,13 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+import os
+from dotenv import load_dotenv
 
-GUILD_ID = 1293979587264380928
+load_dotenv()
+
+GUILD_ID = int(os.getenv('GUILD_ID', 0))
+
 class Ban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

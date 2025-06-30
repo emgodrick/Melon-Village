@@ -5,9 +5,13 @@ import time
 from collections import defaultdict
 from datetime import timedelta
 import asyncio
+import os
+from dotenv import load_dotenv
 
-GUILD_ID = 1293979587264380928
-OWNER_ID = 829064566742057020
+load_dotenv()
+
+GUILD_ID = int(os.getenv('GUILD_ID', 0))
+OWNER_ID = int(os.getenv('OWNER_ID', 0))
 
 # Configuration anti-spam
 SPAM_THRESHOLD = 5  # Nombre de messages
