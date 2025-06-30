@@ -19,7 +19,6 @@ class Unban(commands.Cog):
         reason: str = "Aucune raison fournie"
     ):
         try:
-            # Vérifier si l'ID est valide
             user_id = int(user_id)
         except ValueError:
             await interaction.response.send_message(
@@ -29,10 +28,8 @@ class Unban(commands.Cog):
             return
 
         try:
-            # Récupérer l'utilisateur banni
             user = await self.bot.fetch_user(user_id)
             
-            # Vérifier si l'utilisateur est banni
             bans = [entry async for entry in interaction.guild.bans()]
             if not any(ban.user.id == user_id for ban in bans):
                 await interaction.response.send_message(
@@ -41,7 +38,6 @@ class Unban(commands.Cog):
                 )
                 return
 
-            # Débannir l'utilisateur
             await interaction.guild.unban(
                 user,
                 reason=f"Débanni par {interaction.user}: {reason}"

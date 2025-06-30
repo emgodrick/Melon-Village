@@ -4,10 +4,8 @@ from discord import app_commands
 import os
 from dotenv import load_dotenv
 
-# Charger les variables d'environnement depuis .env
 load_dotenv()
 
-# Récupérer le token depuis les variables d'environnement
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 GUILD_ID = 1293979587264380928
@@ -26,7 +24,7 @@ class MyBot(commands.Bot):
         print("="*50 + "\n")
         
         await self.load_extensions()
-        # Synchronisation forcée des commandes avec le serveur spécifique
+
         guild = discord.Object(id=GUILD_ID)
         self.tree.copy_global_to(guild=guild)
         await self.tree.sync(guild=guild)

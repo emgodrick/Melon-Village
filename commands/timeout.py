@@ -21,9 +21,9 @@ class Timeout(commands.Cog):
         duration: int,
         reason: str = "Aucune raison fournie"
     ):
-        if duration < 1 or duration > 40320:  # 40320 minutes = 28 jours (maximum Discord)
+        if duration < 1 or duration > 40320:
             await interaction.response.send_message(
-                "La durée doit être comprise entre 1 et 40320 minutes.",
+                "La durée maximale autorisée par Discord est de 28 jours",
                 ephemeral=True
             )
             return

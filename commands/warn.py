@@ -20,10 +20,8 @@ class Warn(commands.Cog):
         reason="La raison de l'avertissement"
     )
     async def warn(self, interaction: discord.Interaction, user: discord.Member, reason: str):
-        # Appliquer le mute
         await user.timeout(discord.utils.utcnow() + discord.timedelta(minutes=5), reason=reason)
         
-        # Envoyer le message d'avertissement
         await interaction.response.send_message(
             f"{user.mention} a été averti et mute pendant 5 minutes pour : **{reason}**"
         )

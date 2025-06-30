@@ -11,7 +11,7 @@ OWNER_ID = 829064566742057020
 # Configuration anti-spam
 SPAM_THRESHOLD = 5  # Nombre de messages
 SPAM_WINDOW = 10  # Fenêtre de temps en secondes
-MUTE_DURATION = 300  # Durée du mute en secondes (5 minutes)
+MUTE_DURATION = 300  # Durée du mute en secondes 
 
 class AntiSpam(commands.Cog):
     def __init__(self, bot):
@@ -49,32 +49,27 @@ class AntiSpam(commands.Cog):
         current_time = time.time()
         user_id = message.author.id
 
-        # Nettoyer l'historique des messages anciens
         self.message_history[user_id] = [
             msg_time for msg_time in self.message_history[user_id]
             if current_time - msg_time < SPAM_WINDOW
         ]
 
-        # Ajouter le nouveau message
-        self.message_history[user_id].append(current_time)
 
-        # Vérifier si l'utilisateur spam
+        self.message_history[user_id].append(current_time)
         if len(self.message_history[user_id]) >= SPAM_THRESHOLD:
             if user_id in self.warned_users:
-                # Mute l'utilisateur
                 try:
                     await message.author.timeout(discord.utils.utcnow() + timedelta(seconds=MUTE_DURATION), reason="Spam")
                     await message.channel.send(
                         f"{message.author.mention} a été mute pendant 5 minutes pour spam.",
                         delete_after=10
                     )
-                    # Réinitialiser l'historique et l'avertissement
+
                     self.message_history[user_id] = []
                     self.warned_users.remove(user_id)
                 except discord.Forbidden:
                     await message.channel.send("Je n'ai pas les permissions nécessaires pour mute cet utilisateur.")
             else:
-                # Avertir l'utilisateur
                 await message.channel.send(
                     f"{message.author.mention}, arrêtez de spammer ou vous serez mute pendant 5 minutes.",
                     delete_after=10

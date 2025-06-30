@@ -5,10 +5,8 @@ import os
 from dotenv import load_dotenv
 from commands.ai import ModerationControl
 
-# Charger les variables d'environnement
 load_dotenv()
 
-# Récupérer la clé API depuis les variables d'environnement
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class AutoMod(commands.Cog):
@@ -17,22 +15,17 @@ class AutoMod(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        # Ignorer les messages des bots
         if message.author.bot:
             return
 
-        # Vérifier si l'automod est activé
         automod_cog = self.bot.get_cog("ModerationControl")
         if not automod_cog or not automod_cog.is_auto_mod_enabled():
             return
 
-        # Vérifier si le message est approprié
         try:
-            # Vérifier les permissions du bot
             if not message.guild.me.guild_permissions.manage_messages:
                 return
 
-            # Vérifier les permissions de l'utilisateur
             if message.author.guild_permissions.administrator:
                 return
 
@@ -40,7 +33,6 @@ class AutoMod(commands.Cog):
                 input=message.content
             )
             
-            # Debug: Afficher les résultats de la modération
             categories = response.results[0].categories
             detected_categories = []
             if categories.harassment:
@@ -55,7 +47,7 @@ class AutoMod(commands.Cog):
                 detected_categories.append("violence")
             
             result = "✅ OK" if not detected_categories else f"❌ ({', '.join(detected_categories)})"
-            print(f"Message de {message.author}: {message.content} {result}")
+            print(f"[AUTOMOD] {message.author.name}: {message.content[:30]}{'...' if len(message.content) > 30 else ''} {result}")
             
             if detected_categories:
                 await message.delete()
