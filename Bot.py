@@ -26,8 +26,10 @@ class MyBot(commands.Bot):
         print("="*50 + "\n")
         
         await self.load_extensions()
-        # Synchronisation forcée des commandes
-        await self.tree.sync()
+        # Synchronisation forcée des commandes avec le serveur spécifique
+        guild = discord.Object(id=GUILD_ID)
+        self.tree.copy_global_to(guild=guild)
+        await self.tree.sync(guild=guild)
         print("\n" + "="*50)
         print("✅ Synchronisation des commandes Discord terminée")
         print("="*50)

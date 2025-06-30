@@ -31,6 +31,7 @@ python bot.py
 ## Fonctionnalités
 - **Auto Mod** : Assistant AI automatique
 - **Modération** : Commandes de modération pour gérer votre serveur
+- **Sondages** : Création de sondages interactifs
 
 
 ## Commandes
@@ -49,12 +50,14 @@ python bot.py
 ### Commandes d'Administration
 - `/automod [on/off]` : Active ou désactive la modération automatique (Admin uniquement)
 - `/antispam [on/off]` : Active ou désactive la protection anti-spam (Admin uniquement)
+- `/shutdown` : Éteint le bot (Admin uniquement)
+
 
 ## Support
 
 Si vous rencontrez des problèmes ou avez des questions, n'hésitez pas à :
 1. Ouvrir une issue sur GitHub
-2. Contacter emgodrick
+2. Contactez moi sur Discord (@emgodrick)
 
 ## Licence
 
