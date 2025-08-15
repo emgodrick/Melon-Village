@@ -13,10 +13,9 @@ load_dotenv()
 GUILD_ID = int(os.getenv('GUILD_ID', 0))
 OWNER_ID = int(os.getenv('OWNER_ID', 0))
 
-# Configuration anti-spam
-SPAM_THRESHOLD = 5  # Nombre de messages
-SPAM_WINDOW = 10  # Fenêtre de temps en secondes
-MUTE_DURATION = 300  # Durée du mute en secondes 
+SPAM_THRESHOLD = 5
+SPAM_WINDOW = 10
+MUTE_DURATION = 300
 
 class AntiSpam(commands.Cog):
     def __init__(self, bot):
@@ -49,15 +48,12 @@ class AntiSpam(commands.Cog):
         return self.anti_spam_enabled
 
     def is_spam_message(self, message_id):
-        """Vérifie si un message a été marqué comme spam"""
         return message_id in self.spam_messages
 
     def mark_as_spam(self, message_id):
-        """Marque un message comme spam"""
         self.spam_messages.add(message_id)
 
     async def delete_spam_messages(self, channel, user_id, current_time):
-        """Supprime les messages spam de manière optimisée"""
         if user_id in self.processing_users:
             return
         
@@ -74,10 +70,8 @@ class AntiSpam(commands.Cog):
                 if len(messages_to_delete) <= 100:
                     try:
                         await channel.delete_messages(messages_to_delete)
-                        print(f"[ANTI-SPAM] {len(messages_to_delete)} messages supprimés pour {user_id}")
                     except discord.HTTPException as e:
                         if e.status == 429:  
-                            print(f"[ANTI-SPAM] Rate limit atteint, suppression différée pour {user_id}")
                             for msg in messages_to_delete:
                                 try:
                                     await msg.delete()
@@ -85,7 +79,7 @@ class AntiSpam(commands.Cog):
                                 except:
                                     pass
                         else:
-                            print(f"[ANTI-SPAM] Erreur lors de la suppression: {e}")
+                            pass
                 else:
                     for i in range(0, len(messages_to_delete), 100):
                         batch = messages_to_delete[i:i+100]
@@ -100,7 +94,7 @@ class AntiSpam(commands.Cog):
                                 except:
                                     pass
         except Exception as e:
-            print(f"Erreur lors de la suppression des messages spam: {e}")
+            pass
         finally:
             self.processing_users.discard(user_id)
 
@@ -142,12 +136,6 @@ class AntiSpam(commands.Cog):
                     delete_after=10
                 )
                 self.warned_users.add(user_id)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        automod_cog = self.bot.get_cog("ModerationControl")
-        auto_mod_state = "Activé" if automod_cog and automod_cog.is_auto_mod_enabled() else "Désactivé"
-        print(f"État de l'anti-spam: {'Activé' if self.anti_spam_enabled else 'Désactivé'} | AutoMod: {auto_mod_state}")
 
 async def setup(bot):
     await bot.add_cog(AntiSpam(bot)) 

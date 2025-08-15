@@ -3,42 +3,35 @@ from discord.ext import commands
 from discord import app_commands
 import os
 from dotenv import load_dotenv
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_ID = int(os.getenv('GUILD_ID', 0))
 
-intents = discord.Intents.default()
-intents.message_content = True
-intents.guilds = True
-intents.members = True
-
+intents = discord.Intents.all()
 activity = discord.Game(name="MelonVillage SMP")
 
 class MyBot(commands.Bot):
     async def setup_hook(self):
-        print("\n" + "="*50)
-        print("🚀 Initialisation du bot...")
-        print("="*50 + "\n")
-        
         await self.load_extensions()
 
         guild = discord.Object(id=GUILD_ID)
         self.tree.copy_global_to(guild=guild)
         await self.tree.sync(guild=guild)
-        print("\n" + "="*50)
-        print("✅ Synchronisation des commandes Discord terminée")
-        print("="*50)
 
     async def load_extensions(self):
-        print("\n📚 Chargement des extensions :")
-        print("-"*30)
         for filename in os.listdir('./commands'):
             if filename.endswith('.py') and filename != '__init__.py':
-                await self.load_extension(f'commands.{filename[:-3]}')
-                print(f"  ✓ {filename[:-3]}")
-        print("-"*30)
+                try:
+                    await self.load_extension(f'commands.{filename[:-3]}')
+                except Exception as e:
+                    pass
 
 bot = MyBot(
     command_prefix="!",
@@ -47,22 +40,15 @@ bot = MyBot(
     status=discord.Status.online
 )
 
-@bot.event
-async def on_ready():
-    print("\n" + "="*50)
-    print(f"🤖 Bot connecté avec succès")
-    print(f"📝 Nom : {bot.user.name}")
-    print(f"🆔 ID : {bot.user.id}")
-    print("="*50)
-    
-    print("\n✨ Bot prêt à être utilisé !")
-    print("="*50 + "\n")
-
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     if isinstance(error, app_commands.errors.MissingPermissions):
         await interaction.response.send_message("Tu n'as pas la permission d'utiliser cette commande.", ephemeral=True)
     else:
         await interaction.response.send_message(f"Erreur: {error}", ephemeral=True)
+
+@bot.event
+async def on_message(message):
+    await bot.process_commands(message)
 
 bot.run(DISCORD_TOKEN)

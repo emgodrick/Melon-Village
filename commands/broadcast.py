@@ -10,7 +10,6 @@ load_dotenv()
 GUILD_ID = int(os.getenv('GUILD_ID', 0))
 OWNER_ID = int(os.getenv('OWNER_ID', 0))
 
-# Configuration OpenAI
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class Broadcast(commands.Cog):
@@ -24,12 +23,10 @@ class Broadcast(commands.Cog):
         channel="Le salon où envoyer l'annonce (optionnel)"
     )
     async def broadcast(self, interaction: discord.Interaction, message: str, channel: discord.TextChannel = None):
-        # Vérifier que c'est le propriétaire du bot
         if interaction.user.id != OWNER_ID:
             await interaction.response.send_message("Seulement Emgodrick peut exécuter cette commande", ephemeral=True)
             return
 
-        # Vérifier si la clé API OpenAI est configurée
         if not client.api_key:
             await interaction.response.send_message("Erreur: Clé API OpenAI non configurée.", ephemeral=True)
             return
@@ -37,7 +34,6 @@ class Broadcast(commands.Cog):
         await interaction.response.defer(thinking=True)
 
         try:
-            # Préparer le prompt pour OpenAI
             prompt = f"""Tu es un assistant qui aide à créer des annonces Discord formatées et professionnelles. 
             
             Transforme le message suivant en une annonce Discord avec du formatage :
@@ -70,7 +66,6 @@ class Broadcast(commands.Cog):
             
             Réponds uniquement avec le message formaté, sans explications supplémentaires."""
 
-            # Appel à l'API OpenAI avec la nouvelle syntaxe
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -82,11 +77,8 @@ class Broadcast(commands.Cog):
             )
 
             generated_message = response.choices[0].message.content.strip()
-
-            # Déterminer le salon de destination
             target_channel = channel or interaction.channel
 
-            # Envoyer le message formaté
             await target_channel.send(generated_message)
             await interaction.followup.send(f"✅ Message envoyé dans {target_channel.mention} !", ephemeral=True)
 
