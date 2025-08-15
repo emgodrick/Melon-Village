@@ -119,7 +119,6 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 ## 🆘 Support
 
 - 💬 Discord : @emgodrick
-- 🐛 Issues : [GitHub Issues](https://github.com/votre-username/discord-bot/issues)
 
 ## 🙏 Remerciements
 
